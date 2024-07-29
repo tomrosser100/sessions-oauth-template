@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "jsx": "preserve",
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true, // or `emitDeclarationOnly`
+    "target": "ES6",
+    "allowImportingTsExtensions": true,
+    "allowArbitraryExtensions": true,
+    "verbatimModuleSyntax": true, // or `isolatedModules`
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "noUncheckedIndexedAccess": true
+  }
+}

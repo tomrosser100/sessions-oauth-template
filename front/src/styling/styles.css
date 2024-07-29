@@ -1,0 +1,11 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    max-width: 760px;
+    min-width: 320px;
+    min-height: 480px;
+    margin: auto;
+}

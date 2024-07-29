@@ -1,0 +1,5 @@
+node_modules
+back/dist
+front/dist
+.env
+front/src/styling/tailwind/tw-styles.css

@@ -1,0 +1,1 @@
+web: node back/dist/bundle-back.js
