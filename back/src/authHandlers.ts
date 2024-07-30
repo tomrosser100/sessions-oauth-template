@@ -4,7 +4,7 @@ import { google } from "googleapis";
 import type { Request } from "express";
 import axios from "axios";
 
-const redirect = `${process.env.BASE_URL || `http://localhost`}:${process.env.PORT || 5006}/auth/google/callback`;
+const redirect = `${process.env.BASE_URL || `http://localhostL5006`}/auth/google/callback`;
 console.log('REDIRECT_URL:', redirect)
 const oauthEndpoint = "https://www.googleapis.com/oauth2/v2/userinfo";
 
