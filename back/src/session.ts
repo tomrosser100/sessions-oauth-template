@@ -26,7 +26,7 @@ export const sessionMiddleware = session({
   saveUninitialized: true,
   cookie: {
     secure: (process.env.DYNO ? true : false),
-    maxAge: 20 * 1000,
+    maxAge: 10 * 1000,
     sameSite: 'lax'
   },
 });

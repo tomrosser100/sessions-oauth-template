@@ -20,7 +20,10 @@ const io = new Server(server);
 if (options.usingSSL) app.use(sslRedirect());
 
 app.use(sessionMiddleware)
+
 io.engine.use(sessionMiddleware)
+
+app.set('trust proxy', 1)
 
 app.use(express.static(process.cwd() + options.distPath));
 
