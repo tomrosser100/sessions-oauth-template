@@ -1,8 +1,10 @@
-import express from "express";
+import express, { type Request } from "express";
 import sslRedirect from "heroku-ssl-redirect";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
-import registerSocketHandlers from "./socketHandlers";
+import registerSocketHandlers from "./authHandlers";
+import dbClient from "./dbClient";
+import { sessionMiddleware } from "./session";
 
 const options = {
   distPath: "/front/dist",
@@ -17,6 +19,9 @@ const io = new Server(server);
 
 if (options.usingSSL) app.use(sslRedirect());
 
+app.use(sessionMiddleware)
+io.engine.use(sessionMiddleware)
+
 app.use(express.static(process.cwd() + options.distPath));
 
 app.get("/**", function (req, res) {
@@ -24,8 +29,14 @@ app.get("/**", function (req, res) {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected", socket.id);
+  const req = socket.request as Request
+  const session = req.session
   
+  console.log('sessionID', session.id)
+  console.log('socketID', socket.id)
+
+  console.log("a user connected", socket.id);
+
   socket.on("disconnect", () => {
     console.log(socket.id, "disconnected");
   });
@@ -36,3 +47,17 @@ io.on("connection", (socket) => {
 server.listen(options.port, () => {
   console.log(`http://localhost:${options.port}`);
 });
+
+function gracefulShutdown() {
+  console.log("Received shutdown signal, closing MongoDB connection...");
+  if (dbClient) {
+    dbClient.close(false);
+    console.log("MongoDB connection closed.");
+    process.exit(0);
+  } else {
+    process.exit(0);
+  }
+}
+
+process.on("SIGINT", gracefulShutdown); // CTRL+C
+process.on("SIGTERM", gracefulShutdown); // kill command

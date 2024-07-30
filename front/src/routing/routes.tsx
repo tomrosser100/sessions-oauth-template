@@ -33,6 +33,10 @@ export default [
     element: <div>Logging in...</div>,
     loader: async ({ request }: { request: Request }) => {
       const url = new URL(request.url);
+
+      const error = url.searchParams.get('error')
+      if (error) return redirect('/')
+
       const code = url.searchParams.get("code");
       if (!code) throw new Error();
 
