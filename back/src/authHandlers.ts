@@ -5,6 +5,8 @@ import type { Request } from "express";
 import axios from "axios";
 import crypto from "crypto";
 
+const timeout = 0
+
 function generateNonce() {
   return crypto.randomBytes(16).toString("base64"); // Base64-encoded nonce
 }
@@ -44,7 +46,7 @@ export default (io: Server, socket: Socket<SocketEvents>) => {
         if (session.authorised === true) {
           resolve(true);
         } else resolve(false);
-      }, 2000);
+      }, timeout);
     })) as boolean;
     callback(response);
   });
@@ -52,7 +54,7 @@ export default (io: Server, socket: Socket<SocketEvents>) => {
   socket.on("getAuthURL", async (callback) => {
     const response = (await new Promise((resolve) => {
       console.log("received auth check");
-      setTimeout(() => resolve(url), 2000);
+      setTimeout(() => resolve(url), timeout);
     })) as string;
     console.log("returning url", url);
     callback(url);
