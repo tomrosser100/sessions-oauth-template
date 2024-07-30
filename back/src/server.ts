@@ -6,10 +6,11 @@ import registerSocketHandlers from "./authHandlers";
 import dbClient from "./dbClient";
 import { sessionMiddleware } from "./session";
 
-const options = {
+export const options = {
   distPath: "/front/dist",
   htmlFilename: "index.html",
   usingSSL: false,
+  baseURL: process.env.BASE_URL || `http://localhost:5006`,
   port: process.env.PORT || 5006,
 };
 
