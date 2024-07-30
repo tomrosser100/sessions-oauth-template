@@ -7,7 +7,7 @@
     "tw": "tailwindcss -i ./front/src/styling/tailwind/tw-imports.css -o ./front/src/styling/tailwind/tw-styles.css --watch",
     "serve": "\"npm run tw-onetime\" && webpack serve",
     "heroku": "\"npm run tw-onetime\" && webpack && heroku local",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tailwindcss -i ./front/src/styling/tailwind/tw-imports.css -o ./front/src/styling/tailwind/tw-styles.css && webpack"
   },
   "author": "",
   "license": "ISC",
