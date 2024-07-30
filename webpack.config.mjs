@@ -27,6 +27,7 @@ const frontConfig = {
     filename: "bundle-front.js",
     path: path.resolve(__dirname, "front/dist"),
     clean: true,
+    publicPath: '/'
   },
   plugins: [
     new HtmlWebpackPlugin({
