@@ -23,8 +23,10 @@ export const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET as string,
   resave: false,
   store: store,
+  saveUninitialized: true,
   cookie: {
-    maxAge: 10 * 1000,
+    secure: (process.env.DYNO ? true : false),
+    maxAge: 20 * 1000,
     sameSite: 'lax'
   },
 });

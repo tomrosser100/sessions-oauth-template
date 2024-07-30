@@ -32,23 +32,25 @@ export default [
     path: "/auth/google/callback",
     element: <div>Logging in...</div>,
     loader: async ({ request }: { request: Request }) => {
-      const url = new URL(request.url);
+      console.log(request)
+      const hash = window.location.hash
 
-      const error = url.searchParams.get('error')
-      if (error) return redirect('/')
+      const hashParams = new URLSearchParams(hash.substring(1))
 
-      const code = url.searchParams.get("code");
-      if (!code) throw new Error();
+      const idToken = hashParams.get('id_token') as string
 
-      console.log("sending code to server", code);
+      console.log("sending code to server", idToken);
 
       const response = await new Promise((resolve) => {
-        (socket as Socket<SocketEvents>).emit("postAuthCode", code, (response) => {
+        (socket as Socket<SocketEvents>).emit(
+          "postAuthCode",
+          idToken,
+          (response) => {
+            console.log("server responds ok");
 
-          console.log("server responds ok");
-          
-          resolve(response);
-        });
+            resolve(response);
+          }
+        );
       });
 
       return redirect("/");

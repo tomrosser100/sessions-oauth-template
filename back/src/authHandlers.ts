@@ -3,10 +3,20 @@ import type SocketEvents from "../../shared/socketEvents";
 import { google } from "googleapis";
 import type { Request } from "express";
 import axios from "axios";
+import crypto from "crypto";
 
-const redirect = `${process.env.DYNO && 'https://auth-session-test-887deca60332.herokuapp.com' || `http://localhost:5006`}/auth/google/callback`;
-console.log('REDIRECT_URL:', redirect)
-const oauthEndpoint = "https://www.googleapis.com/oauth2/v2/userinfo";
+function generateNonce() {
+  return crypto.randomBytes(16).toString("base64"); // Base64-encoded nonce
+}
+
+const nonce = generateNonce();
+
+const redirect = `${
+  (process.env.DYNO &&
+    "https://auth-session-test-887deca60332.herokuapp.com") ||
+  `http://localhost:5006`
+}/auth/google/callback`;
+const oauthEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -16,7 +26,9 @@ const oauth2Client = new google.auth.OAuth2(
 
 const url = oauth2Client.generateAuthUrl({
   access_type: "online",
-  scope: [`email`],
+  response_type: "id_token",
+  scope: [`openid`],
+  nonce,
 });
 
 export default (io: Server, socket: Socket<SocketEvents>) => {
@@ -24,6 +36,9 @@ export default (io: Server, socket: Socket<SocketEvents>) => {
   const session = req.session;
 
   socket.on("isAuth", async (callback) => {
+    console.log('isAuth:', session.authorised)
+
+
     const response = (await new Promise((resolve) => {
       setTimeout(() => {
         if (session.authorised === true) {
@@ -43,21 +58,24 @@ export default (io: Server, socket: Socket<SocketEvents>) => {
     callback(url);
   });
 
-  socket.on("postAuthCode", async (code, callback) => {
-    const { tokens } = await oauth2Client.getToken(code);
-    const response = await axios.get(oauthEndpoint, {
-      headers: {
-        Authorization: `Bearer ${tokens.access_token}`,
-      },
+  socket.on("postAuthCode", async (idToken, callback) => {
+    const ticket = await oauth2Client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
-    console.log(response.data);
 
-    if (tokens) {
-      session.email = response.data.email;
-      session.authorised = true;
-      session.save();
-    }
+    const payload = ticket.getPayload();
 
+    if (payload === undefined) return callback("auth failed");
+    if (payload.nonce !== nonce) return callback("auth failed");
+
+    console.log(payload);
+    const userId = payload.sub;
+    console.log(userId);
+    session.authorised = true;
+    session.save();
+
+    console.log(session.authorised)
     callback("authorisation complete");
   });
 

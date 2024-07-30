@@ -10,7 +10,6 @@ export const options = {
   distPath: "/front/dist",
   htmlFilename: "index.html",
   usingSSL: false,
-  baseURL: process.env.BASE_URL || `http://localhost:5006`,
   port: process.env.PORT || 5006,
 };
 
@@ -32,16 +31,11 @@ app.get("/**", function (req, res) {
 io.on("connection", (socket) => {
   const req = socket.request as Request
   const session = req.session
-  
   console.log('sessionID', session.id)
   console.log('socketID', socket.id)
-
-  console.log("a user connected", socket.id);
-
   socket.on("disconnect", () => {
     console.log(socket.id, "disconnected");
   });
-
   registerSocketHandlers(io, socket);
 });
 
@@ -50,7 +44,7 @@ server.listen(options.port, () => {
 });
 
 function gracefulShutdown() {
-  console.log("Received shutdown signal, closing MongoDB connection...");
+  console.log("Received shutdown signal...");
   if (dbClient) {
     dbClient.close(false);
     console.log("MongoDB connection closed.");
