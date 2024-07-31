@@ -1,17 +1,17 @@
 import React from "react";
 import ErrorPage from "./ErrorPage";
-import Main from "../fit-to-screen-app/Main";
 import mainAction from "../fit-to-screen-app/action";
 import mainLoader from "../fit-to-screen-app/loader";
 import socket from "../socket";
 import type { Socket } from "socket.io-client";
 import { redirect } from "react-router-dom";
 import type SocketEvents from "../../../shared/socketEvents";
+import Landing from "../fit-to-screen-app/Landing";
 
 export default [
   {
     path: "/",
-    element: <Main />,
+    element: <Landing />,
     errorElement: <ErrorPage />,
     action: mainAction,
     loader: mainLoader,
@@ -38,6 +38,7 @@ export default [
       const hashParams = new URLSearchParams(hash.substring(1))
 
       const idToken = hashParams.get('id_token') as string
+      if (!idToken) return redirect('/')
 
       console.log("sending code to server", idToken);
 

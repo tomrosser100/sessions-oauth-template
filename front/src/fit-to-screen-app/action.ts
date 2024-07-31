@@ -4,6 +4,7 @@ import { eventEmitter } from "./eventEmitter";
 
 export default async function ({ request }: { request: any }) {
   const data = Object.fromEntries(await request.formData());
+
   eventEmitter.emit("actionSubmit", { type: "user", msg: data.userInput });
 
   const response = (await new Promise((resolve) => {

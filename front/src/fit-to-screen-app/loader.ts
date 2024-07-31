@@ -16,7 +16,7 @@ export default async () => {
 
   if (isAuth) {
     console.log("continue to app");
-    return null;
+    return ('user data')
   } else {
     console.log("get auth url");
 

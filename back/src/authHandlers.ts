@@ -2,10 +2,9 @@ import type { Server, Socket } from "socket.io";
 import type SocketEvents from "../../shared/socketEvents";
 import { google } from "googleapis";
 import type { Request } from "express";
-import axios from "axios";
 import crypto from "crypto";
 
-const timeout = 0
+const timeout = 3000
 
 function generateNonce() {
   return crypto.randomBytes(16).toString("base64"); // Base64-encoded nonce
@@ -18,7 +17,6 @@ const redirect = `${
     "https://auth-session-test-887deca60332.herokuapp.com") ||
   `http://localhost:5006`
 }/auth/google/callback`;
-const oauthEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
