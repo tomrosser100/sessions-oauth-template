@@ -1,7 +1,7 @@
-Web App Template
+Sessions, Google Authentication OAuth2, Socket.io Template
 
-- Deploys to Heroku (requires Heroku CLI)
-- Hot Module Replacement via Webpack Dev Server
-- Fit-to-window responsive UI
+- Lazy
 
+
+MongoDB, Express-Sessions, GoogleApis, Socket.io
 Babel, React, Webpack, Express, Styled-Components, Tailwind
